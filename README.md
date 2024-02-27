@@ -1,0 +1,2 @@
+# NginxLog_CountCountry
+MySQLに保存したNginxの国別アクセスログを集計して割合を出力してくれるやつ
