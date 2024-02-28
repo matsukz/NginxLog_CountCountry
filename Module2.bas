@@ -16,15 +16,18 @@ Sub Date_Country()
     
     'データを消す
     Dim AGC_Y As Integer: AGC_Y = 2
+    Dim i As Byte 'ループ用
     While Not AGC.Cells(AGC_Y, 1) = ""
-        AGC.Cells(AGC_Y, 1) = "": AGC.Cells(AGC_Y, 2) = ""
+        i = 1
+        For i = 1 To 3 Step 1
+            AGC.Cells(AGC_Y, i) = ""
+        Next i
         AGC_Y = AGC_Y + 1
     Wend
     
     While Not DC.Cells(1, CountryEndX) = ""
 
         Check = DC.Cells(1, CountryEndX)
-        Debug.Print (Check)
     
         'Date_Countryのシートで集計する
         sum = 0: CountEndY = 2
@@ -34,8 +37,6 @@ Sub Date_Country()
             sum = sum + DC.Cells(CountEndY, CountryEndX)
             CountEndY = CountEndY + 1
         Wend
-        
-        Debug.Print (sum)
         
         If sum <= 0 Then
             'sumが0以下なら結果を出力しない
@@ -53,14 +54,44 @@ Sub Date_Country()
         CountryEndX = CountryEndX + 1
     Wend
     
+    '割合を求めて、その他を後で使う
+    Dim ratio As Single
+    ratio = Module2.ratio(sum_other)
+    
     '割合を降順に並び替える
     Module2.csort
     
     'ソート後にその他を追記する
     AGC.Cells(AG_CountY, AG_CountX) = "その他"
     AGC.Cells(AG_CountY, AG_CountX + 1) = sum_other
+    AGC.Cells(AG_CountY, AG_CountX + 2) = ratio
     
 End Sub
+
+Function ratio(ByVal sum_other As Integer) As Single
+    Dim AGC As Worksheet: Set AGC = Worksheets("AG_Date_Country")
+    Dim sum_all As Integer: sum_all = 0
+    Dim AGC_Y As Integer: AGC_Y = 2
+    
+    '合計を求める
+    While Not AGC.Cells(AGC_Y, 1) = ""
+        sum_all = sum_all + AGC.Cells(AGC_Y, 2)
+        AGC_Y = AGC_Y + 1
+    Wend
+    
+    sum_all = sum_all + sum_other
+
+    '割合を求める
+    AGC_Y = 2
+    While Not AGC.Cells(AGC_Y, 1) = ""
+        AGC.Cells(AGC_Y, 3) = AGC.Cells(AGC_Y, 2) / sum_all
+        AGC_Y = AGC_Y + 1
+    Wend
+    
+    'その他の割合を返す
+    ratio = sum_other / (sum_all)
+    
+End Function
 
 Sub csort()
     Dim AGC As Worksheet: Set AGC = Worksheets("AG_Date_Country")
