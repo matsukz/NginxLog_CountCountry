@@ -14,6 +14,10 @@ Sub Date_Country()
 
     CountryEndX = 2
     
+    '「その他」の基準(なければ0をセットする)
+    If AGC.Range("I1") = "" Then AGC.Range("I1") = 0
+    Dim other As Integer: other = AGC.Range("I1")
+    
     'データを消す
     Dim AGC_Y As Integer: AGC_Y = 2
     Dim i As Byte 'ループ用
@@ -40,15 +44,16 @@ Sub Date_Country()
         
         If sum <= 0 Then
             'sumが0以下なら結果を出力しない
-        ElseIf sum <= 50 Then
+        ElseIf sum <= other Then
             '5以下はその他にする
             sum_other = sum_other + sum
         Else
-            'withステートメントが効かない謎
+            
             AGC.Cells(AG_CountY, AG_CountX) = Check
             AGC.Cells(AG_CountY, AG_CountX + 1) = sum
-             '出力先セル番地を移動させておく
+            '出力先セル番地を移動させておく
             AG_CountX = 1: AG_CountY = AG_CountY + 1
+            
         End If
         
         CountryEndX = CountryEndX + 1
@@ -62,9 +67,11 @@ Sub Date_Country()
     Module2.csort
     
     'ソート後にその他を追記する
-    AGC.Cells(AG_CountY, AG_CountX) = "その他"
-    AGC.Cells(AG_CountY, AG_CountX + 1) = sum_other
-    AGC.Cells(AG_CountY, AG_CountX + 2) = ratio
+    With AGC
+        .Cells(AG_CountY, AG_CountX) = "その他"
+        .Cells(AG_CountY, AG_CountX + 1) = sum_other
+        .Cells(AG_CountY, AG_CountX + 2) = ratio
+    End With
     
 End Sub
 
