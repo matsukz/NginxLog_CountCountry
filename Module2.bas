@@ -1,3 +1,5 @@
+'https://github.com/matsukz/NginxLog_CountCountry
+
 Sub Date_Country()
     Dim CountEndY As Integer
     Dim Check As String '国コードを格納する
@@ -63,15 +65,20 @@ Sub Date_Country()
     Dim ratio As Single
     ratio = Module2.ratio(sum_other)
     
-    '割合を降順に並び替える
-    Module2.csort
+    '割合を降順に並び替える(並び替える範囲を引数にする)
+    Module2.csort Range(AGC.Cells(2, 1), AGC.Cells(AG_CountY - 1, 3)).address, _
+                  Range(AGC.Cells(2, 3), AGC.Cells(AG_CountY - 1, 3)).address
     
-    'ソート後にその他を追記する
-    With AGC
-        .Cells(AG_CountY, AG_CountX) = "その他"
-        .Cells(AG_CountY, AG_CountX + 1) = sum_other
-        .Cells(AG_CountY, AG_CountX + 2) = ratio
-    End With
+    'ソート後にその他を追記する。その他が0のときは無視
+    If sum_other = 0 Then
+        '何もしない
+    Else
+        With AGC
+            .Cells(AG_CountY, AG_CountX) = "その他"
+            .Cells(AG_CountY, AG_CountX + 1) = sum_other
+            .Cells(AG_CountY, AG_CountX + 2) = ratio
+        End With
+    End If
     
 End Sub
 
@@ -100,14 +107,14 @@ Function ratio(ByVal sum_other As Integer) As Single
     
 End Function
 
-Sub csort()
+Sub csort(ByVal sort_range As String, ByVal sort_key As String)
     Dim AGC As Worksheet: Set AGC = Worksheets("AG_Date_Country")
     AGC.Sort.SortFields.Clear
     AGC.Sort.SortFields.Add2 Key:=Range( _
-        "C2:C100"), SortOn:=xlSortOnValues, Order:=xlDescending, DataOption:= _
+        sort_key), SortOn:=xlSortOnValues, Order:=xlDescending, DataOption:= _
         xlSortNormal
     With AGC.Sort
-        .SetRange Range("A2:C100")
+        .SetRange Range(sort_range)
         .Header = xlNo
         .MatchCase = False
         .Orientation = xlTopToBottom
