@@ -1,100 +1,105 @@
-Attribute VB_Name = "Module1"
 Sub Refresh()
-    
-    'ì‹Æ‚ğs‚¤ƒ[ƒNƒV[ƒg‚ğƒAƒNƒeƒBƒu‚É‚·‚é
-    Worksheets("Database").Select
-    
-    'Œ»İ‚Ìƒf[ƒ^”‚ğƒJƒEƒ“ƒg‚·‚é
-    Dim datacount As Long
-    datacount = 0
-    
-    datacount = Worksheets("Database").ListObjects("NginxLog").ListRows.Count
 
-    'MySQL‚ÉÚ‘±‚Å‚«‚é‚©ƒeƒXƒg‚·‚é
-    Select Case request("http://192.168.11.15:5500/port?ip=100.96.0.1&port=3306&option=2")
-        Case 0
-            'ƒf[ƒ^ƒ\[ƒX‚ğXV‚·‚é
-            ActiveWorkbook.RefreshAll
-        Case 1
-            MsgBox "MySQLƒT[ƒo[‚Ö‚ÌÚ‘±Œ±‚É¸”s‚µ‚Ü‚µ‚½B" & vbLf & "ŠÔ‚ğ‹ó‚¯‚ÄÄs‚µ‚Ä‚­‚¾‚³‚¢B"
-            Worksheets("Dashboard").Select
-            Exit Sub
-        Case 2
-            MsgBox "Flask‚©‚ç‚Ì‰“š‚ª‚ ‚è‚Ü‚¹‚ñ‚Å‚µ‚½"
-            Worksheets("Dashboard").Select
-            Exit Sub
-        Case 3
-            MsgBox "•s–¾‚ÈƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½"
-            Worksheets("Dashboard").Select
-            Exit Sub
-    End Select
-        
+    Dim DB As Worksheet: Set DB = Worksheets("Database")
+    Dim Board As Worksheet: Set Board = Worksheets("Dashboard")
     
-    'ÄÆ‰ïŒã‚Ìƒf[ƒ^‚ğƒJƒEƒ“ƒg‚·‚é
-    Dim after_datacount As Long
-    after_datacount = 0
+    'ä½œæ¥­ã‚’è¡Œã†ãƒ¯ãƒ¼ã‚¯ã‚·ãƒ¼ãƒˆã‚’ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ã™ã‚‹
+    Board.Select
     
-    after_datacount = Worksheets("Database").ListObjects("NginxLog").ListRows.Count
-    
-    Debug.Print (datacount)
-    Debug.Print (after_datacount)
-    
-    '‰~ƒOƒ‰ƒtXV
-    Module2.Date_Country
-    
-    'ƒsƒ|ƒbƒgƒe[ƒuƒ‹‚ÌXV
-    
-    'msg‚Ì•\¦
-    Dim msg As String
-    msg = "XV‚ªŠ®—¹‚µ‚Ü‚µ‚½B" & vbCrLf
-    If after_datacount - datacount = 0 Then
-        msg = msg & "V‚µ‚¢ƒŒƒR[ƒh‚Í‚ ‚è‚Ü‚¹‚ñ"
+    'é›†è¨ˆç¯„å›²ã®ã‚¨ãƒ©ãƒ¼ã‚’ãƒã‚§ãƒƒã‚¯ã™ã‚‹
+    'é›†è¨ˆç¯„å›²ãŒå…¥åŠ›ã•ã‚Œã¦ã„ãªã„ã¨ã
+    If Board.Range("AJ2") = "" Or Board.Range("AS2") = "" Then
+        MsgBox "é›†è¨ˆç¯„å›²ãŒè¨­å®šã•ã‚Œã¦ã„ãªã„ãŸã‚ç¶šè¡Œã§ãã¾ã›ã‚“", vbCritical
+        Exit Sub
     Else
-        msg = msg & after_datacount - datacount & " Œ’Ç‰Á‚³‚ê‚Ü‚µ‚½"
+        'ä½•ã‚‚ã—ãªã„
     End If
     
-    Worksheets("Dashboard").Select
+    'Board.Range("AJ2")ã®ã»ã†ãŒå°ã•ã„å ´åˆ
+    If Board.Range("AJ2") > Board.Range("AS2") Then
+        MsgBox "é›†è¨ˆç¯„å›²ãŒä¸é©åˆ‡ãªãŸã‚ç¶šè¡Œã§ãã¾ã›ã‚“", vbCritical
+        Exit Sub
+    Else
+        'ä½•ã‚‚ã—ãªã„
+    End If
     
+    'ç¾åœ¨ã®ãƒ‡ãƒ¼ã‚¿æ•°ã‚’ã‚«ã‚¦ãƒ³ãƒˆã™ã‚‹
+    Dim datacount As Long: datacount = 0
+    datacount = DB.ListObjects("NginxLog").ListRows.Count
+    
+    'MySQLã«æ¥ç¶šã§ãã‚‹ã‹ãƒ†ã‚¹ãƒˆã™ã‚‹
+    Select Case request("http://192.168.11.15:5500/port?ip=100.96.0.1&port=3306&option=2")
+        Case 0
+            'ãƒ‡ãƒ¼ã‚¿ã‚½ãƒ¼ã‚¹ã‚’æ›´æ–°ã™ã‚‹
+            ActiveWorkbook.RefreshAll
+        Case 1
+            MsgBox "MySQLã‚µãƒ¼ãƒãƒ¼ã¸ã®æ¥ç¶šè©¦é¨“ã«å¤±æ•—ã—ã¾ã—ãŸã€‚" & vbLf & "æ™‚é–“ã‚’ç©ºã‘ã¦å†è©¦è¡Œã—ã¦ãã ã•ã„ã€‚"
+            Exit Sub
+        Case 2
+            MsgBox "Flaskã‹ã‚‰ã®å¿œç­”ãŒã‚ã‚Šã¾ã›ã‚“ã§ã—ãŸ"
+            Exit Sub
+        Case 3
+            MsgBox "ä¸æ˜ãªã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ"
+            Exit Sub
+    End Select
+    
+    'å†ã‚¯ã‚¨ãƒªå¾Œã®ãƒ‡ãƒ¼ã‚¿ã‚’ã‚«ã‚¦ãƒ³ãƒˆã™ã‚‹
+    Dim after_datacount As Long: after_datacount = 0
+    
+    after_datacount = DB.ListObjects("NginxLog").ListRows.Count
+    
+    'å††ã‚°ãƒ©ãƒ•æ›´æ–°
+    Module2.Date_Country
+    
+    'msgã®è¡¨ç¤º
+    Dim msg As String
+    msg = "æ›´æ–°ãŒå®Œäº†ã—ã¾ã—ãŸã€‚" & vbCrLf
+    If after_datacount - datacount = 0 Then
+        msg = msg & "æ–°ã—ã„ãƒ¬ã‚³ãƒ¼ãƒ‰ã¯ã‚ã‚Šã¾ã›ã‚“"
+    Else
+        msg = msg & after_datacount - datacount & " ä»¶è¿½åŠ ã•ã‚Œã¾ã—ãŸ"
+    End If
+        
     MsgBox msg, vbInformation
     
 End Sub
 
 Function request(ByVal point As String) As Integer
 
-    'ƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO
+    'ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°
     On Error GoTo errorHandler
     
-    'ƒc[ƒ‹@QÆİ’è‚©‚ç"Microsoft XML v6.0"‚ğ—LŒø‚É‚·‚é‚±‚ÆIII
+    'ãƒ„ãƒ¼ãƒ«ã€€å‚ç…§è¨­å®šã‹ã‚‰"Microsoft XML v6.0"ã‚’æœ‰åŠ¹ã«ã™ã‚‹ã“ã¨ï¼ï¼ï¼
     Dim HttpReq As Object
     Set HttpReq = CreateObject("MSXML2.XMLHTTP")
     
     Dim response As Boolean: response = False
     
-    'ƒŠƒNƒGƒXƒgì¬ ‘æOˆø”¨True(”ñ“¯Šú) False(“¯Šú)
-    'ƒLƒƒƒbƒVƒ…–h~‚Ìˆ×ƒ^ƒCƒ€ƒXƒ^ƒ“ƒv‚ğ‚Â‚¯‚é(Flask‚Å‚Í–³‹)
+    'ãƒªã‚¯ã‚¨ã‚¹ãƒˆä½œæˆ ç¬¬ä¸‰å¼•æ•°â†’True(éåŒæœŸ) False(åŒæœŸ)
+    'ã‚­ãƒ£ãƒƒã‚·ãƒ¥é˜²æ­¢ã®ç‚ºã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—ã‚’ã¤ã‘ã‚‹(Flaskã§ã¯ç„¡è¦–)
     Dim timestamp As String: timestamp = Format(Now, "yyyymmddhhmmss")
     HttpReq.Open "GET", point & "&nocache=" & timestamp, False
     HttpReq.send
     
-    'subƒvƒƒV[ƒWƒƒ‚ÉŒ‹‰Ê‚ğ“n‚·ˆ—
+    'subãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã«çµæœã‚’æ¸¡ã™å‡¦ç†
     response = HttpReq.responseText
     If response = True Then
-        request = 0 '³í‚ÈI—¹ƒR[ƒh
+        request = 0 'æ­£å¸¸ãªçµ‚äº†ã‚³ãƒ¼ãƒ‰
     ElseIf response = False Then
-        request = 1 'Flask‚É‚Í“’B‚µ‚½‚ªsocket’ÊM‚É¸”s‚µ‚½
+        request = 1 'Flaskã«ã¯åˆ°é”ã—ãŸãŒsocketé€šä¿¡ã«å¤±æ•—ã—ãŸ
     Else
-        request = 3 '‚»‚Ì‘¼ƒGƒ‰[
+        request = 3 'ãã®ä»–ã‚¨ãƒ©ãƒ¼
     End If
     
     GoTo cleanUP
     
 errorHandler:
-    '‚±‚±‚ğ—˜—p‚·‚é‚Æ‚«‚ÍFlask‚ª—‚¿‚Ä‚¢‚é‚Æ‚«
-    MsgBox "Error!! " & Err.Description & "APIƒT[ƒo[‚ğ‚Í³í‚Å‚·‚©H"
+    'ã“ã“ã‚’åˆ©ç”¨ã™ã‚‹ã¨ãã¯FlaskãŒè½ã¡ã¦ã„ã‚‹ã¨ã
+    MsgBox "Error!! " & Err.Description & "APIã‚µãƒ¼ãƒãƒ¼ã‚’ã¯æ­£å¸¸ã§ã™ã‹ï¼Ÿ", vbExclamation
     request = 3
-    Set HttpReq = Nothing 'ƒIƒuƒWƒFƒNƒg‰ğ•ú
+    Set HttpReq = Nothing 'ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆè§£æ”¾
 
 cleanUP:
-    Set HttpReq = Nothing 'ƒIƒuƒWƒFƒNƒg‰ğ•ú
+    Set HttpReq = Nothing 'ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆè§£æ”¾
     
 End Function
