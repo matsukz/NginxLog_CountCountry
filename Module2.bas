@@ -14,8 +14,6 @@ Sub Date_Country()
     Dim AG_CountX, AG_CountY As Integer
     AG_CountX = 1: AG_CountY = 2
 
-    CountryEndX = 2
-    
     '「その他」の基準(なければ0をセットする)
     If AGC.Range("I1") = "" Then AGC.Range("I1") = 0
     Dim other As Integer: other = AGC.Range("I1")
@@ -31,10 +29,11 @@ Sub Date_Country()
         AGC_Y = AGC_Y + 1
     Wend
     
+    Dim CountryEndX As Integer: CountryEndX = 2
     While Not DC.Cells(1, CountryEndX) = ""
 
         Check = DC.Cells(1, CountryEndX)
-    
+        
         'Date_Countryのシートで集計する
         sum = 0: CountEndY = 2
         
@@ -59,6 +58,7 @@ Sub Date_Country()
         End If
         
         CountryEndX = CountryEndX + 1
+        
     Wend
     
     '割合を求めて、その他を後で使う
