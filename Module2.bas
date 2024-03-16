@@ -34,27 +34,33 @@ Sub Date_Country()
 
         Check = DC.Cells(1, CountryEndX)
         
-        'Date_Countryのシートで集計する
-        sum = 0: CountEndY = 2
-        
-        '各列のデータをsumに加算する
-        While Not DC.Cells(CountEndY, CountryEndX) = ""
-            sum = sum + DC.Cells(CountEndY, CountryEndX)
-            CountEndY = CountEndY + 1
-        Wend
-        
-        If sum <= 0 Then
-            'sumが0以下なら結果を出力しない
-        ElseIf sum <= other Then
-            '5以下はその他にする
-            sum_other = sum_other + sum
+        If Check = "JP" And AGC.Range("I2") = False Then
+            '日本を含めない場合は以下の加算表示処理をスキップする
         Else
+    
+            'Date_Countryのシートで集計する
+            sum = 0: CountEndY = 2
+        
+            '各列のデータをsumに加算する
+            While Not DC.Cells(CountEndY, CountryEndX) = ""
+                sum = sum + DC.Cells(CountEndY, CountryEndX)
+                CountEndY = CountEndY + 1
+            Wend
+        
+            If sum <= 0 Then
+                'sumが0以下なら結果を出力しない
+            ElseIf sum <= other Then
+                '5以下はその他にする
+                sum_other = sum_other + sum
+            Else
             
             AGC.Cells(AG_CountY, AG_CountX) = Check
             AGC.Cells(AG_CountY, AG_CountX + 1) = sum
             '出力先セル番地を移動させておく
             AG_CountX = 1: AG_CountY = AG_CountY + 1
             
+            End If
+        
         End If
         
         CountryEndX = CountryEndX + 1
